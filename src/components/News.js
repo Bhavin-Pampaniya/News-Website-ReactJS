@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
+import Spinner from "./Spinner";
 
 export class News extends Component {
   constructor() {
@@ -12,30 +13,38 @@ export class News extends Component {
   }
   async componentDidMount() {
     let url =
-      `https://newsapi.org/v2/top-headlines?category=business&country=in&apiKey=36b2e20384fa46169880842fb59fb3ac&page=1&pageSize=12`;
+      `https://newsapi.org/v2/top-headlines?category=business&country=in&apiKey=36b2e20384fa46169880842fb59fb3ac&page=1&pagesize=${this.props.pageSize}`;
+    this.setState({loading:true});
     let data = await fetch(url);
     let parcedData = await data.json();
-    console.log(parcedData);
-    this.setState({ articles: parcedData.articles,totalResults:parcedData.totalResults });
+    this.setState({ articles: parcedData.articles,
+        totalResults:parcedData.totalResults,
+        loading:false
+       });
   }
   handleNext = async()=>{
-    let url = `https://newsapi.org/v2/top-headlines?category=business&country=in&apiKey=36b2e20384fa46169880842fb59fb3ac&page=${this.state.page+1}&pageSize=12`;
+    let url = `https://newsapi.org/v2/top-headlines?category=business&country=in&apiKey=36b2e20384fa46169880842fb59fb3ac&page=${this.state.page+1}&pagesize=${this.props.pageSize}`;
+    this.setState({loading:true});
+
     let data = await fetch(url);
     let parcedData = await data.json();
-    this.setState({ articles: parcedData.articles,page:this.state.page+1 });
+    this.setState({ articles: parcedData.articles,page:this.state.page+1,loading:false });
   }
   handlePrev = async()=>{
-    let url = `https://newsapi.org/v2/top-headlines?category=business&country=in&apiKey=36b2e20384fa46169880842fb59fb3ac&page=${this.state.page-1}&pageSize=12`;
+    let url = `https://newsapi.org/v2/top-headlines?category=business&country=in&apiKey=36b2e20384fa46169880842fb59fb3ac&page=${this.state.page-1}&pagesize=${this.props.pageSize}`;
+    this.setState({loading:true});
+
     let data = await fetch(url);
     let parcedData = await data.json();
-    this.setState({ articles: parcedData.articles,page: this.state.page-1 });
+    this.setState({ articles: parcedData.articles,page: this.state.page-1,loading:false });
   }
   render() {
     return (
       <div className="container my-3">
-        <h2>RealTime - News Website</h2>
+        <h2 className="text-center">RealTime - News Website</h2>
+        {this.state.loading && <Spinner/>}
         <div className="row">
-          {this.state.articles.map((element) => {
+          {!this.state.loading && this.state.articles.map((element) => {
             return (
               <div className="col-md-4" key={element.url}>
                 <NewsItem
