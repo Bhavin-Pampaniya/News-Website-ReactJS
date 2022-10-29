@@ -6,7 +6,7 @@ export class NewsItem extends Component {
     return (
       <div className="my-3">
         <div className="card" style={{ width: "auto" }}>
-          <span className="position-absolute top-0 translate-middle badge rounded-pill bg-danger" style={{left: '94%', zIndex:'1'}}>
+          <span className="position-absolute top-0 translate-middle badge rounded-pill bg-danger" style={{left: '92%', zIndex:'1'}}>
             {source}
           </span>
           <img
@@ -31,7 +31,7 @@ export class NewsItem extends Component {
             </a>
             <p className="card-text my-1">
               <small className="text-muted">
-                By {author} on {new Date(date).toGMTString()}
+                By {author?author:"Unknown"} on {new Date(date).toGMTString()}
               </small>
             </p>
           </div>
