@@ -18,7 +18,7 @@ export default function App(){
         <Router>
         <Navbar/>
         <LoadingBar
-        color='#f11946'
+        color='#f11946' 
         progress={progress}
         />
         <Routes>

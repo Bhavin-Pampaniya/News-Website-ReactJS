@@ -1,15 +1,14 @@
-import React from "react";
+import React,{ useEffect, useState }  from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
 import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useEffect, useState } from "react";
 
 const News = (props) => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalResults, settotalResults] = useState(0);
+  const [totalResults, setTotalResults] = useState(0);
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -18,21 +17,23 @@ const News = (props) => {
   const updateNews = async () => {
     props.setProgress(10);
     const url = `https://newsapi.org/v2/top-headlines?category=${props.category}&country=${props.country}&apiKey=${props.apiKey}&page=${page}&pagesize=${props.pageSize}`;
+    setLoading(true)
     let data = await fetch(url);
     props.setProgress(40);
     let parcedData = await data.json();
     props.setProgress(70);
-
     console.log(parcedData);
     setArticles(parcedData.articles);
-    settotalResults(parcedData.totalResults);
+    setTotalResults(parcedData.totalResults);
     setLoading(false);
     props.setProgress(100);
   };
+
   useEffect(() => {
     updateNews();
-    document.title = `NeuzNow - ${this.capitalizeFirstLetter(this.props.category)}`;
-  });
+    document.title = `NeuzNow - ${capitalizeFirstLetter(props.category)}`;
+    // eslint-disable-next-line
+  },[]);
 
   const fetchMoreData = async () => {
     const url = `https://newsapi.org/v2/top-headlines?category=${
@@ -44,17 +45,10 @@ const News = (props) => {
     let data = await fetch(url);
     let parcedData = await data.json();
     setArticles(articles.concat(parcedData.articles));
-    settotalResults(parcedData.totalResults);
+    setTotalResults(parcedData.totalResults);
   };
-  // handleNext = async()=>{
-  //   this.setState({page:this.state.page+1});
-  //   this.updateNews();
-  // }
-  // handlePrev = async()=>{
-  //   this.setState({page:this.state.page-1});
-  //   this.updateNews();
 
-  // }
+
   return (
     <>
       <h2 className="text-center">
@@ -96,10 +90,6 @@ const News = (props) => {
           </div>
         </div>
       </InfiniteScroll>
-      {/* <div className="container d-flex justify-content-between">
-        <button disabled={this.state.page<=1} type="button" className="btn btn-primary " onClick={this.handlePrev}>&larr; Pervious</button>
-        <button disabled={this.state.page >= Math.ceil(this.state.totalResults/this.props.pageSize)} type="button" className="btn btn-primary " onClick={this.handleNext}>Next &rarr;</button>
-        </div> */}
     </>
   );
 };
